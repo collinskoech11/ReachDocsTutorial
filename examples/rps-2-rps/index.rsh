@@ -1,34 +1,40 @@
 'reach 0.1';
-
-const Player = {// defines a participant interract interfce (With two methods which both receive a number)
-  getHand: Fun([], UInt),
-  seeOutcome: Fun([UInt], Null),
-};
-
-export const main = Reach.App(() => {// this interface for both participants. Because of this line, interact in the rest of the program will be bound to an object with methods corresponding to these actions, which will connect to the frontend of the corresponding participant.
+//participant interact interface that will be shared between the two players.line3-6
+const Player = {
+    getHand: Fun([], UInt),
+    seeOutcome: Fun([UInt], Null),
+  };
+export const main = Reach.App(() => {
   const Alice = Participant('Alice', {
+    // Specify Alice's interact interface here
     ...Player,
   });
   const Bob   = Participant('Bob', {
-    ...Player,
+   // Specify Bob's interact interface here
+   ...Player,
   });
-  init();
-
-  Alice.only(() => {// This block can only be performed by alice 
-    //   const handAlice = declassify(interact.getHand());//only known to alice 
+  init();  // write your program here
+  Alice.only( ()=>{//code performed by alice only
+      //he backend for Alice interacts with its frontend, gets Alice's hand, and publishes it
+      const handAlice = declassify(interact.getHand());// binds that value to the result of interacting with Alice 
   })
-//   Alice.publish(handAlice);// Alice join the application by publishing the value to the consensus network, 
+  Alice.publish(handAlice);//lice join the application by publishing the value to the consensus network, so it can be used to evaluate the outcome of the game
+  commit();//commits the state of the consensus network and returns to "local step" where individual participants can act alone.
 
-//   commit();// commits the state of the consensus network and returns to local step
-  Bob.only(() => {
-    //   const handBob = declassify(interract.getHand());
+
+  Bob.only( ()=>{
+    const handBob = declassify(interact.getHand());
+});
+Bob.publish(handBob);
+const outcome =(handAlice + (4 - handBob)) % 3 ;// computes outcome
+/* onsider when handAlice is 0 (i.e., Rock) and handBob is 2 (i.e., Scissors),
+ then this equation is ((handAlice + (4 - handBob)) % 3) = ((0 + (4 - 2)) % 3) = ((0 + 2) % 3) = (2 % 3) = 2*/
+commit();
+each([Alice, Bob], () => { //local step that each of the participants performs
+    interact.seeOutcome(outcome);
   });
-//   Bob.publish(handBob);
+});
 
-//   const outcome = (handAlice + (4 - handBob)) % 3;//computes the outcome of the game before committing 
-// //   commit();
 
-//   each([Alice, Bob], () => {//states that this is a local step that each participant performs 
-//       interact.seeOutcome(outcome);
-  })
-})
+//building a version of Rock, Paper, Scissors! where two players,
+// Alice and Bob, can wager on the result of the game
