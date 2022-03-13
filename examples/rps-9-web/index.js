@@ -4,11 +4,11 @@ import DeployerViews from './views/DeployerViews';
 import AttacherViews from './views/AttacherViews';
 import {renderDOM, renderView} from './views/render';
 import './index.css';
-import * as backend from './build/index.main.mjs';
-import {loadStdlib} from '@reach-sh/stdlib';
+import * as backend from './build/index.main.mjs';// import the compiled backend
+import {loadStdlib} from '@reach-sh/stdlib';//load stlib as reach 
 const reach = loadStdlib(process.env);
 
-const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};
+const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};//On these lines we define a few helpful constants and defaults for later, some corresponding to the enumerations we defined in Reach.
 const intToOutcome = ['Bob wins!', 'Draw!', 'Alice wins!'];
 const {standardUnit} = reach;
 const defaults = {defaultFundAmt: '10', defaultWager: '3', standardUnit};
@@ -16,27 +16,27 @@ const defaults = {defaultFundAmt: '10', defaultWager: '3', standardUnit};
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {view: 'ConnectAccount', ...defaults};
+    this.state = {view: 'ConnectAccount', ...defaults};// we initilize the component state to display Connect Account dialog 
   }
-  async componentDidMount() {
-    const acc = await reach.getDefaultAccount();
+  async componentDidMount() {// Hook into rects componentDidMount lifecycle event, which is called when the compnent starts 
+    const acc = await reach.getDefaultAccount();// accesses the default browser account 
     const balAtomic = await reach.balanceOf(acc);
     const bal = reach.formatCurrency(balAtomic, 4);
     this.setState({acc, bal});
-    if (await reach.canFundFromFaucet()) {
-      this.setState({view: 'FundAccount'});
+    if (await reach.canFundFromFaucet()) {// see if we can access the Reach developer testing network 
+      this.setState({view: 'FundAccount'});// if canFundFaucet was true  we set the display to Fundd Account dialog 
     } else {
-      this.setState({view: 'DeployerOrAttacher'});
+      this.setState({view: 'DeployerOrAttacher'});// If canFundFaucet was false  we set the component to skip 
     }
   }
-  async fundAccount(fundAmount) {
-    await reach.fundFromFaucet(this.state.acc, reach.parseCurrency(fundAmount));
-    this.setState({view: 'DeployerOrAttacher'});
+  async fundAccount(fundAmount) {// we define what happens when the user clicks the Fund Accont button 
+    await reach.fundFromFaucet(this.state.acc, reach.parseCurrency(fundAmount));//we transfer funds from the faucet to the users account 
+    this.setState({view: 'DeployerOrAttacher'});// we set the component state to display 
   }
-  async skipFundAccount() { this.setState({view: 'DeployerOrAttacher'}); }
-  selectAttacher() { this.setState({view: 'Wrapper', ContentView: Attacher}); }
+  async skipFundAccount() { this.setState({view: 'DeployerOrAttacher'}); }// we define what to do when the user clicks the skip button, which is to set the component state to display 
+  selectAttacher() { this.setState({view: 'Wrapper', ContentView: Attacher}); }//we setthe sub component based on whether the user clicks Deployer or Attacher
   selectDeployer() { this.setState({view: 'Wrapper', ContentView: Deployer}); }
-  render() { return renderView(this, AppViews); }
+  render() { return renderView(this, AppViews); }//we render the appropriate view from rps-9-web/views/AppViews.js.
 }
 
 class Player extends React.Component {
