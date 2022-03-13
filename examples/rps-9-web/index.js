@@ -24,7 +24,7 @@ class App extends React.Component {
     const bal = reach.formatCurrency(balAtomic, 4);
     this.setState({acc, bal});
     if (await reach.canFundFromFaucet()) {// see if we can access the Reach developer testing network 
-      this.setState({view: 'FundAccount'});// if canFundFaucet was true  we set the display to Fundd Account dialog 
+      this.setState({view: 'FundAccount'});// if canFundFaucet was true  we set the display to Fund Account dialog 
     } else {
       this.setState({view: 'DeployerOrAttacher'});// If canFundFaucet was false  we set the component to skip 
     }
