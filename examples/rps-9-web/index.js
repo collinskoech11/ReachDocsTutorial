@@ -6,6 +6,7 @@ import {renderDOM, renderView} from './views/render';
 import './index.css';
 import * as backend from './build/index.main.mjs';// import the compiled backend
 import {loadStdlib} from '@reach-sh/stdlib';//load stlib as reach 
+
 const reach = loadStdlib(process.env);
 
 const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};//On these lines we define a few helpful constants and defaults for later, some corresponding to the enumerations we defined in Reach.
@@ -23,6 +24,7 @@ class App extends React.Component {
     const balAtomic = await reach.balanceOf(acc);
     const bal = reach.formatCurrency(balAtomic, 4);
     this.setState({acc, bal});
+    
     if (await reach.canFundFromFaucet()) {// see if we can access the Reach developer testing network 
       this.setState({view: 'FundAccount'});// if canFundFaucet was true  we set the display to Fund Account dialog 
     } else {
@@ -34,7 +36,7 @@ class App extends React.Component {
     this.setState({view: 'DeployerOrAttacher'});// we set the component state to display 
   }
   async skipFundAccount() { this.setState({view: 'DeployerOrAttacher'}); }// we define what to do when the user clicks the skip button, which is to set the component state to display 
-  selectAttacher() { this.setState({view: 'Wrapper', ContentView: Attacher}); }//we setthe sub component based on whether the user clicks Deployer or Attacher
+  selectAttacher() { this.setState({view: 'Wrapper', ContentView: Attacher}); }// we set the sub component based on whether the user clicks Deployer or Attacher
   selectDeployer() { this.setState({view: 'Wrapper', ContentView: Deployer}); }
   render() { return renderView(this, AppViews); }//we render the appropriate view from rps-9-web/views/AppViews.js.
 }
