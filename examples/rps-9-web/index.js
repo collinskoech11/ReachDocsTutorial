@@ -8,7 +8,7 @@ import * as backend from './build/index.main.mjs';// import the compiled backend
 import {loadStdlib} from '@reach-sh/stdlib';//load stlib as reach 
 
 const reach = loadStdlib(process.env);
-
+reach.setWalletFallback(reach.walletFallback({}))
 const handToInt = {'ROCK': 0, 'PAPER': 1, 'SCISSORS': 2};//On these lines we define a few helpful constants and defaults for later, some corresponding to the enumerations we defined in Reach.
 const intToOutcome = ['Bob wins!', 'Draw!', 'Alice wins!'];
 const {standardUnit} = reach;
